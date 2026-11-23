@@ -10,8 +10,16 @@
   List.iter (fun (s, k) -> Hashtbl.add h s k)
     [ "print",    PRINT;
       "main",     MAIN;
+
+      "var",      VAR;
+      "int",      INT_TYPE;
+      "bool",     BOOL_TYPE;
+      "void",     VOID_TYPE;
+
       "true",     TRUE;
       "false",    FALSE;
+      "if",       IF;
+      "else",     ELSE;
     ] ;
   fun s ->
     try  Hashtbl.find h s
@@ -45,7 +53,7 @@ rule token = parse
   | "/"  { DIV }
   | "%"  { MOD }
   | "=="  { EQ }
-  | "!= " { NEQ }
+  | "!=" { NEQ }
   | "<"  { LT }
   | "<=" { LE }
   | ">"  { GT }

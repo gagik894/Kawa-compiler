@@ -1,0 +1,13 @@
+main {
+  if (2 < 3) {
+    print(42);
+  } else {
+    print(0);
+  }
+
+  if (2 > 3) {
+    print(0);
+  } else {
+    print(7);
+  }
+}

@@ -21,11 +21,17 @@
 %token MAIN
 %token LPAR RPAR BEGIN END SEMI
 %token PRINT
+
+%token VAR INT_TYPE BOOL_TYPE VOID_TYPE
+
 %token EOF
 
-%nonassoc EQ
+%left OR
+%left AND
+%nonassoc EQ NEQ
+%nonassoc LT LE GT GE
 %left PLUS MINUS
-%left STAR DIV
+%left STAR DIV MOD
 
 %start program
 %type <Kawa.program> program
@@ -33,8 +39,19 @@
 %%
 
 program:
-| MAIN BEGIN main=list(instruction) END EOF
-    { {classes=[]; globals=[]; main} }
+| globals=list(var_decl) MAIN BEGIN main=list(instruction) END EOF
+    { { classes = []; globals; main } }
+;
+
+var_decl:
+| VAR ty=typ name=IDENT SEMI { (name, ty) }
+;
+
+typ:
+| INT_TYPE   { TInt }
+| BOOL_TYPE  { TBool }
+| name=IDENT { TClass name }
+| VOID_TYPE  { TVoid }
 ;
 
 instruction:
@@ -42,6 +59,7 @@ instruction:
 | x=IDENT ASSIGN e=expression SEMI { Set(Var(x), e) }
 | IF LPAR e=expression RPAR BEGIN s1=list(instruction) END ELSE BEGIN s2=list(instruction) END 
     { If(e, s1, s2) } 
+
 ;
 
 %inline binop:
@@ -49,7 +67,15 @@ instruction:
 | MINUS { Sub }
 | STAR { Mul }
 | DIV { Div }
+| MOD { Rem }
 | EQ { Eq }
+| NEQ { Neq }
+| LT { Lt }
+| LE { Le }
+| GT { Gt }
+| GE { Ge }
+| AND { And }
+| OR { Or }
 ;
 
 expression:
@@ -58,5 +84,5 @@ expression:
 | FALSE { Bool(false) }
 | x=IDENT { Get(Var(x)) }
 | e1=expression op=binop e2=expression { Binop(op, e1, e2) }
-
+| LPAR e=expression RPAR { e }
 ;
