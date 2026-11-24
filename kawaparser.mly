@@ -14,8 +14,10 @@
 %token LT LE GT GE
 %token AND OR
 %token EQ NEQ
+%token NOT
 
 %token IF ELSE
+%token WHILE
 
 %token ASSIGN
 %token MAIN
@@ -32,6 +34,7 @@
 %nonassoc LT LE GT GE
 %left PLUS MINUS
 %left STAR DIV MOD
+%nonassoc UNARY
 
 %start program
 %type <Kawa.program> program
@@ -59,7 +62,7 @@ instruction:
 | x=IDENT ASSIGN e=expression SEMI { Set(Var(x), e) }
 | IF LPAR e=expression RPAR BEGIN s1=list(instruction) END ELSE BEGIN s2=list(instruction) END 
     { If(e, s1, s2) } 
-
+| WHILE LPAR e=expression RPAR BEGIN s=list(instruction) END { While(e, s) }
 ;
 
 %inline binop:
@@ -83,6 +86,8 @@ expression:
 | TRUE { Bool(true) }
 | FALSE { Bool(false) }
 | x=IDENT { Get(Var(x)) }
+| MINUS e=expression %prec UNARY { Unop (Opp, e) }
+| NOT e=expression %prec UNARY { Unop (Not, e) }
 | e1=expression op=binop e2=expression { Binop(op, e1, e2) }
 | LPAR e=expression RPAR { e }
 ;

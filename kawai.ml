@@ -27,6 +27,9 @@ let () =
      report (lexeme_start_p lb, lexeme_end_p lb);
      eprintf "syntax error@.";
      exit 1
+  | Typechecker.Error s ->
+     eprintf "type error: %s@." s;
+     exit 1
   | Interpreter.Error s ->
      eprintf "interpreter error: %s@." s;
      exit 1

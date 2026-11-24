@@ -24,6 +24,10 @@ let typecheck_prog p =
     | _ -> failwith "case not implemented in type_expr"
 
   and type_mem_access m tenv = match m with
+    | Var name ->
+        (match Env.find_opt name tenv with
+         | Some typ -> typ
+         | None -> error ("unknown variable: " ^ name))
     | _ -> failwith "case not implemented in type_mem_access"
   in
 

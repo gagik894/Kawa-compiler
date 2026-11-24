@@ -20,6 +20,8 @@
       "false",    FALSE;
       "if",       IF;
       "else",     ELSE;
+
+      "while",    WHILE;
     ] ;
   fun s ->
     try  Hashtbl.find h s
@@ -28,7 +30,7 @@
 }
 
 let digit = ['0'-'9']
-let number = ['-']? digit+
+let number = digit+
 let alpha = ['a'-'z' 'A'-'Z']
 let ident = ['a'-'z' '_'] (alpha | '_' | digit)*
   
@@ -54,6 +56,7 @@ rule token = parse
   | "%"  { MOD }
   | "=="  { EQ }
   | "!=" { NEQ }
+  | "!"  { NOT }
   | "<"  { LT }
   | "<=" { LE }
   | ">"  { GT }
